@@ -1,9 +1,6 @@
 import java.util.Scanner;
 import factories.*;
-import model.Route;
-import model.Exceptions.NoBikeLanesException;
-import model.Exceptions.NoPublicTransportException;
-import model.Exceptions.TooLongToWalkException;
+import model.*;
 import strategies.TransportStrategy;
 
 
