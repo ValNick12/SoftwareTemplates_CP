@@ -1,7 +1,5 @@
 package strategies;
 
-import model.Route;
-
 public interface TransportStrategy {
     boolean canTravel();
     double calculateTime();// in hours
