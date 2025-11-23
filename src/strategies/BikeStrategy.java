@@ -11,7 +11,7 @@ public class BikeStrategy extends BaseStrategy {
 
     @Override
     public void execute() {
-        System.out.println("Bike is traveling...");
+        System.out.println("--- Bike Info ---\n");
     }
 
     @Override

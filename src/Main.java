@@ -6,137 +6,118 @@ import model.Exceptions.NoPublicTransportException;
 import model.Exceptions.TooLongToWalkException;
 import strategies.TransportStrategy;
 
-public class Main {
 
-    // MAIN FILE CREATE THE routes
-    // you can add routes in some ArrayList, sort it, group it etc
-    // if you want Main.java to look cleaner, make some RouterController or RouteManager to create routes,
-    // then create it in the main
+void main(String[] args) {
+    Scanner scanner = new Scanner(System.in);
+    Route route = new Route();
 
-    // you can read from database (check Route.java)
+    while (true) {
 
-    public static void main(String[] args) {
-        Scanner scanner = new Scanner(System.in);
-        Route route = new Route();
+        System.out.println("\n--- MENU ---");
+        System.out.println("1. Create Route");
+        System.out.println("2. Quit");
+        System.out.print("Enter choice: ");
 
-        while (true) {
+        int choice = scanner.nextInt();
+        scanner.nextLine();
 
-            System.out.println("\n--- MENU ---");
-            System.out.println("1. Create Route");
-            System.out.println("2. Quit");
-            System.out.print("Enter choice: ");
+        if (choice == 2) {
+            System.out.println("Goodbye!");
+            break;
+        }
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); // consume newline
+        if (choice != 1) {
+            System.out.println("Invalid option!");
+            continue;
+        }
 
-            if (choice == 2) {
-                System.out.println("Goodbye!");
+        // --- City selection ---
+        System.out.println("\nChoose city:");
+        System.out.println("1. Sungurlare");
+        System.out.println("2. Sofia");
+        System.out.println("3. Warsaw");
+        System.out.print("Enter choice: ");
+
+        int cityChoice = scanner.nextInt();
+        scanner.nextLine();
+
+        TransportFactory factory;
+
+        switch (cityChoice) {
+            case 1:
+                factory = SungurlareTransportFactory.getInstance();
                 break;
-            }
-
-            if (choice != 1) {
-                System.out.println("Invalid option!");
+            case 2:
+                factory = SofiaTransportFactory.getInstance();
+                break;
+            case 3:
+                factory = WarsawTransportFactory.getInstance();
+                break;
+            default:
+                System.out.println("Invalid city!");
                 continue;
-            }
+        }
 
-            // -------- SELECT CITY ----------
-            System.out.println("\nChoose city:");
-            System.out.println("1. Sungurlare");
-            System.out.println("2. Sofia");
-            System.out.println("3. Warsaw");
-            System.out.print("Enter choice: ");
+        // --- Distance and speed input ---
+        System.out.print("Enter distance (km): ");
+        double distance = scanner.nextDouble();
 
-            int cityChoice = scanner.nextInt();
-            scanner.nextLine();
+        System.out.print("Enter speed (km/h): ");
+        double speed = scanner.nextDouble();
+        scanner.nextLine();
 
-            TransportFactory factory;
+        // --- Transport Selection ---
+        System.out.println("\nChoose travel type:");
+        System.out.println("1. Car");
+        System.out.println("2. Public Transport");
+        System.out.println("3. Bike");
+        System.out.println("4. Walk");
+        System.out.print("Enter choice: ");
 
-            switch (cityChoice) {
-                case 1:
-                    factory = SungurlareTransportFactory.getInstance();
-                    break;
-                case 2:
-                    factory = SofiaTransportFactory.getInstance();
-                    break;
-                case 3:
-                    factory = WarsawTransportFactory.getInstance();
-                    break;
-                default:
-                    System.out.println("Invalid city!");
-                    continue;
-            }
+        int transportChoice = scanner.nextInt();
+        scanner.nextLine();
 
-            // -------- INPUT DISTANCE AND SPEED ----------
-            System.out.print("Enter distance (km): ");
-            double distance = scanner.nextDouble();
+        TransportStrategy strategy;
 
-            System.out.print("Enter speed (km/h): ");
-            double speed = scanner.nextDouble();
-            scanner.nextLine();
+        switch (transportChoice) {
+            case 1: // Car
+                System.out.print("Enter fuel consumption l/100km: ");
+                double gas = scanner.nextDouble();
+                scanner.nextLine();
 
-            // -------- SELECT TRANSPORT ----------
-            System.out.println("\nChoose travel type:");
-            System.out.println("1. Car");
-            System.out.println("2. Public Transport");
-            System.out.println("3. Bike");
-            System.out.println("4. Walk");
-            System.out.print("Enter choice: ");
+                strategy = factory.createCarStrategy(speed, distance, gas);
+                break;
 
-            int transportChoice = scanner.nextInt();
-            scanner.nextLine();
+            case 2: // Public Transport
+                strategy = factory.createPTStrategy(speed, distance);
+                break;
 
-            TransportStrategy strategy = null;
+            case 3: // Bike
+                strategy = factory.createBikeStrategy(speed, distance);
+                break;
 
-            switch (transportChoice) {
+            case 4: // Walk
+                strategy = factory.createWalkStrategy(speed, distance);
+                break;
 
-                case 1: // CAR
-                    System.out.print("Enter fuel consumption l/100km: ");
-                    double gas = scanner.nextDouble();
-                    scanner.nextLine();
-                    strategy = factory.createCarStrategy(speed, distance, gas);
-                    break;
+            default:
+                System.out.println("Invalid transport method!");
+                continue;
+        }
 
-                case 2:
-                    try{
-                        strategy = factory.createPTStrategy(speed, distance);
-                        break;
-                    }catch (NoPublicTransportException e){
-                        System.out.println(e.getMessage());
-                        continue;
-                    }
-                case 3:
-                    try{
-                        strategy = factory.createBikeStrategy(speed, distance);
-                        break;
-                    }catch (NoBikeLanesException e){
-                        System.out.println(e.getMessage());
-                        continue;
-                    }
-                case 4:
-                    try{
-                        strategy = factory.createWalkStrategy(speed, distance);
-                        break;
-                    }catch (TooLongToWalkException e){
-                        System.out.println(e.getMessage());
-                        continue;
-                    }
 
-                default:
-                    System.out.println("Invalid transport method!");
-                    continue;
-            }
-
-            // -------- PERFORM ACTION ----------
+        // --- Travel action ---
+        try {
             route.setStrategy(strategy);
             route.travel();
             System.out.println("Time to travel: " + route.calculateTime() + " h");
             System.out.println("Cost: " + route.calculateCost() + " lv");
-
+        }catch (RuntimeException e){
+            System.out.println(e.getMessage());
         }
-
-        scanner.close();
-
     }
+
+    scanner.close();
 
 }
 

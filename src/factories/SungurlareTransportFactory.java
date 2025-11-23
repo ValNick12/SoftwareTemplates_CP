@@ -6,8 +6,8 @@ import model.Exceptions.TooLongToWalkException;
 import strategies.*;
 
 public class SungurlareTransportFactory implements TransportFactory {
-    private boolean hasPublicTransport = true;
-    private double ticketCost = 1.0;
+    private boolean hasPublicTransport = false;
+    private double ticketCost = 0.0;
     private boolean hasBikeLines = true;
 
     // --- private construtor ---
