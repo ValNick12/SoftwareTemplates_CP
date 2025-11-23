@@ -1,6 +1,9 @@
 import java.util.Scanner;
 import factories.*;
-import model.*;
+import model.Route;
+import model.Exceptions.NoBikeLanesException;
+import model.Exceptions.NoPublicTransportException;
+import model.Exceptions.TooLongToWalkException;
 import strategies.TransportStrategy;
 
 public class Main {
@@ -38,8 +41,9 @@ public class Main {
 
             // -------- SELECT CITY ----------
             System.out.println("\nChoose city:");
-            System.out.println("1. Varna");
+            System.out.println("1. Sungurlare");
             System.out.println("2. Sofia");
+            System.out.println("3. Warsaw");
             System.out.print("Enter choice: ");
 
             int cityChoice = scanner.nextInt();
@@ -53,6 +57,9 @@ public class Main {
                     break;
                 case 2:
                     factory = SofiaTransportFactory.getInstance();
+                    break;
+                case 3:
+                    factory = WarsawTransportFactory.getInstance();
                     break;
                 default:
                     System.out.println("Invalid city!");
@@ -70,7 +77,7 @@ public class Main {
             // -------- SELECT TRANSPORT ----------
             System.out.println("\nChoose travel type:");
             System.out.println("1. Car");
-            System.out.println("2. Bus");
+            System.out.println("2. Public Transport");
             System.out.println("3. Bike");
             System.out.println("4. Walk");
             System.out.print("Enter choice: ");
@@ -93,17 +100,26 @@ public class Main {
                     try{
                         strategy = factory.createPTStrategy(speed, distance);
                         break;
-                    }catch (RuntimeException e){
-                        System.out.println(e.getMessage);
+                    }catch (NoPublicTransportException e){
+                        System.out.println(e.getMessage());
                         continue;
                     }
                 case 3:
-                    strategy = factory.createBikeStrategy(speed, distance);
-                    break;
-
+                    try{
+                        strategy = factory.createBikeStrategy(speed, distance);
+                        break;
+                    }catch (NoBikeLanesException e){
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
                 case 4:
-                    strategy = factory.createWalkStrategy(speed, distance);
-                    break;
+                    try{
+                        strategy = factory.createWalkStrategy(speed, distance);
+                        break;
+                    }catch (TooLongToWalkException e){
+                        System.out.println(e.getMessage());
+                        continue;
+                    }
 
                 default:
                     System.out.println("Invalid transport method!");
@@ -113,7 +129,7 @@ public class Main {
             // -------- PERFORM ACTION ----------
             route.setStrategy(strategy);
             route.travel();
-            System.out.println("ETA: " + route.calculateETA() + " h");
+            System.out.println("Time to travel: " + route.calculateTime() + " h");
             System.out.println("Cost: " + route.calculateCost() + " lv");
 
         }

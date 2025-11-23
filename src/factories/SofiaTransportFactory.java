@@ -36,7 +36,7 @@ public class SofiaTransportFactory implements TransportFactory {
     @Override
     public TransportStrategy createWalkStrategy(double speed, double distance) {
         try {
-            return new BikeStrategy(speed, distance);
+            return new WalkStrategy(speed, distance);
         }catch (TooLongToWalkException e) {
             throw new TooLongToWalkException();
         }

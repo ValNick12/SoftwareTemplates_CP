@@ -3,6 +3,7 @@ package strategies;
 public class CarStrategy extends BaseStrategy {
 
     private double fuelConsumption;
+    private double fuelCost;
 
     public CarStrategy(double speed, double distance, double fuelConsumption) {
         super(speed, distance);
@@ -21,6 +22,6 @@ public class CarStrategy extends BaseStrategy {
 
     @Override
     public double calculateCost() {
-        return this.distance * this.fuelConsumption;
+        return this.distance * (this.fuelConsumption / 100) * this.fuelCost;
     }
 }

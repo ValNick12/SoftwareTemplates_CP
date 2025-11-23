@@ -7,8 +7,8 @@ import strategies.*;
 
 public class WarsawTransportFactory implements TransportFactory{
     private boolean hasPublicTransport = true;
-    private double ticketCost = 1.6;
-    private boolean hasBikeLines = false;
+    private double ticketCost = 3.0;
+    private boolean hasBikeLines = true;
 
     // --- private construtor ---
     private WarsawTransportFactory() {}
@@ -39,7 +39,7 @@ public class WarsawTransportFactory implements TransportFactory{
     @Override
     public TransportStrategy createWalkStrategy(double speed, double distance) {
         try {
-            return new BikeStrategy(speed, distance);
+            return new WalkStrategy(speed, distance);
         }catch (TooLongToWalkException e) {
             throw new TooLongToWalkException();
         }
