@@ -1,21 +1,30 @@
 package strategies;
+import model.Exceptions.*;
 
-import model.Route;
+public class BikeStrategy extends BaseStrategy {
+    private boolean hasBikeLines;
 
-public class BikeStrategy implements TransportStrategy {
-    @Override
-    public boolean canTravel(Route route) {
-        return route.getTransportFactory().hasBikeLanes();
+    public BikeStrategy(double speed, double distance, boolean hasBikeLines) {
+        super(speed, distance);
+        this.hasBikeLines = hasBikeLines;
     }
 
     @Override
-    public double calculateTime(Route route) {
-        double speed = 15.0; // km/h
-        return route.getDistance() / speed;
+    public void execute() {
+        System.out.println("Bike is traveling...");
     }
 
     @Override
-    public double calculateCost(Route route) {
-        return 0.0; // free
+    public double calculateTime() {
+        if(this.hasBikeLines) {
+            return this.distance / this.speed;
+        } else {
+            throw new NoBikeLanesException();
+        }
+    }
+
+    @Override
+    public double calculateCost() {
+        return 0.0;
     }
 }

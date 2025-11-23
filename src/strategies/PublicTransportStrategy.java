@@ -1,27 +1,34 @@
 package strategies;
 
-import model.Route;
+import model.Exceptions.NoPublicTransportException;
 
-public class PublicTransportStrategy implements TransportStrategy {
+public class PublicTransportStrategy extends BaseStrategy {
 
-    private double speed;
+    private double ticketCost;
+    private boolean hasPublicTransport;
 
-    public PublicTransportStrategy (double speed) {
-        this.speed = speed;
+    public PublicTransportStrategy(double speed, double distance, boolean hasPublicTransport, double ticketCost) {
+        super(speed, distance);
+        this.hasPublicTransport = hasPublicTransport;
+        this.ticketCost = ticketCost;
     }
 
     @Override
-    public boolean canTravel(Route route) {
-        return route.hasPublicTransport();
+    public void execute() {
+        System.out.println("--- Public Transport Info ---\n");
     }
 
     @Override
-    public double calculateTime(Route route) {
-        return route.getDistance() / speed;
+    public double calculateTime() {
+        if(this.hasPublicTransport) {
+            return this.distance / this.speed;
+        } else {
+            throw new NoPublicTransportException();
+        }
     }
 
     @Override
-    public double calculateCost(Route route) {
-        return 1.60; // fixed ticket price
+    public double calculateCost() {
+        return calculateTime() * this.ticketCost; // every hour traveler pays ticket
     }
 }

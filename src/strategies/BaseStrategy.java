@@ -10,5 +10,11 @@ public abstract class BaseStrategy implements TransportStrategy {
     }
 
     @Override
-    public abstract boolean canTravel();
+    public abstract void execute();
+
+    @Override
+    public abstract double calculateTime();
+
+    @Override
+    public abstract double calculateCost();
 }

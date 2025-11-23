@@ -1,4 +1,5 @@
 package factories;
+import model.Exceptions.*;
 import strategies.*;
 
 public class SofiaTransportFactory implements TransportFactory {
@@ -21,9 +22,12 @@ public class SofiaTransportFactory implements TransportFactory {
 
     @Override
     public TransportStrategy createPTStrategy(double speed, double distance) {
-        return new PublicTransportStrategy(speed, distance, this.hasPublicTransport, this.ticketCost);
+        try {
+            return new PublicTransportStrategy(speed, distance, this.hasPublicTransport, this.ticketCost);
+        }catch (NoPublicTransportException e) {
+            throw new NoPublicTransportException();
+        }
     }
-
     @Override
     public TransportStrategy createCarStrategy(double speed, double distance, double fuelConsumption) {
         return new CarStrategy(speed, distance, fuelConsumption);
@@ -31,11 +35,19 @@ public class SofiaTransportFactory implements TransportFactory {
 
     @Override
     public TransportStrategy createWalkStrategy(double speed, double distance) {
-        return new WalkStrategy(speed, distance);
+        try {
+            return new BikeStrategy(speed, distance);
+        }catch (TooLongToWalkException e) {
+            throw new TooLongToWalkException();
+        }
     }
 
     @Override
     public TransportStrategy createBikeStrategy(double speed, double distance) {
-        return new BikeStrategy(speed, distance, this.hasBikeLines);
+        try {
+            return new BikeStrategy(speed, distance, this.hasBikeLines);
+        }catch (NoBikeLanesException e) {
+            throw new NoBikeLanesException();
+        }
     }
 }

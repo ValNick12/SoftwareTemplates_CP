@@ -3,32 +3,31 @@ package model;
 import strategies.TransportStrategy;
 
 public class Route {
-    private City city;
-    private double distance;
-    private boolean hasPublicTransport;
-    private boolean hasBikeLanes;
-    private TransportStrategy transportStrategy;
+    private TransportStrategy strategy;
 
-    public Route(City city, double distance, boolean hasPublicTransport, boolean hasBikeLanes) {
-        this.city = city;
-        this.distance = distance;
-        this.hasPublicTransport = hasPublicTransport;
-        this.hasBikeLanes = hasBikeLanes;
+    public Route() {}
+
+    public Route(TransportStrategy strategy) {
+        this.strategy = strategy;
     }
 
-    public double getDistance() {
-        return distance;
+    public TransportStrategy getStrategy() {
+        return this.strategy;
     }
 
-    public boolean canTravel() {
-        return transportStrategy.canTravel(hasBikeLanes, hasPublicTransport);
+    public void setStrategy(TransportStrategy strategy) {
+        this.strategy = strategy;
     }
 
-    public double calculateTime(Route route) {
-        return transportStrategy.calculateTime(route);
+    public void travel() {
+        this.strategy.execute();
     }
 
-    public double calculateCost(Route route) {
-        return  transportStrategy.calculateCost(route);
+    public double calculateTime() {
+        return this.strategy.calculateTime();
+    }
+
+    public double calculateCost() {
+        return this.strategy.calculateCost();
     }
 }

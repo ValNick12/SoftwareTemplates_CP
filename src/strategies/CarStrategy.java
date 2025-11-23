@@ -1,28 +1,26 @@
 package strategies;
 
-import model.Route;
+public class CarStrategy extends BaseStrategy {
 
-public class CarStrategy implements TransportStrategy {
+    private double fuelConsumption;
 
-    private double speed;
-
-    public CarStrategy(double speed) {
-        this.speed = speed;
+    public CarStrategy(double speed, double distance, double fuelConsumption) {
+        super(speed, distance);
+        this.fuelConsumption = fuelConsumption;
     }
 
     @Override
-    public boolean canTravel(boolean hasBikeLanes, boolean hasPublicTransport) {
-        return true; // car can always travel
+    public void execute() {
+        System.out.println("--- Car Info ---\n");
     }
 
     @Override
-    public double calculateTime(Route route) {
-        return route.getDistance() / speed;
+    public double calculateTime() {
+        return this.distance / this.speed;
     }
 
     @Override
-    public double calculateCost(Route route) {
-        double fuelPricePerKm = 0.20;
-        return route.getDistance() * fuelPricePerKm;
+    public double calculateCost() {
+        return this.distance * this.fuelConsumption;
     }
 }
